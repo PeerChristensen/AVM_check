@@ -53,10 +53,9 @@ for (i in 1:length(from)) {
     gather(variable, value,-House,-houseNums,-EstimeretKvmPris) %>%
     ggplot(aes(x=value,y=EstimeretKvmPris, colour = House)) +
     facet_wrap(~variable,scales="free",ncol=3) +
-    geom_smooth(alpha = .1, colour = "darkgrey") +
     geom_point(size=3, alpha = .8) +
     scale_color_tableau() +
-    ggtitle(glue::glue("Numeriske variabler: {batch[i]}")) +
+    ggtitle(glue::glue("EstimeretKvmPris ~ Numeric variables: {batch[i]}")) +
     scale_y_continuous(labels = function(n) {
       trans = n / 1000
       paste0(trans, "K")
@@ -74,9 +73,9 @@ df %>%
   gather(variable, value,-House,-houseNums,-EstimeretKvmPris) %>%
   ggplot(aes(x=value,y=EstimeretKvmPris, colour = House)) +
   facet_wrap(~variable,scales="free") +
-  geom_smooth(alpha = .1, colour = "darkgrey") +
   geom_point(size=3, alpha = .8) +
   scale_color_tableau() +
+  ggtitle("EstimeretKvmPris ~ Numeric variables") +
   scale_y_continuous(labels = function(n) {
     trans = n / 1000
     paste0(trans, "K")
@@ -96,10 +95,9 @@ for (i in 1:length(from)) {
     gather(variable, value,-House,-houseNums,-SenesteHandelspris) %>%
     ggplot(aes(x=value,y=SenesteHandelspris, colour = House)) +
     facet_wrap(~variable,scales="free",ncol=3) +
-    geom_smooth(alpha = .1, colour = "darkgrey") +
     geom_point(size=3, alpha = .8) +
     scale_color_tableau() +
-    ggtitle(glue::glue("Numeriske variabler: {batch[i]}")) +
+    ggtitle(glue::glue("SenesteHandelspris ~ Numeric variables: {batch[i]}")) +
     scale_y_continuous(labels = function(n) {
       trans = n / 1000000
       paste0(trans, "M")
@@ -116,8 +114,8 @@ df %>%
   gather(variable, value,-House,-houseNums,-SenesteHandelspris) %>%
   ggplot(aes(x=value,y=SenesteHandelspris, colour = House)) +
   facet_wrap(~variable,scales="free",ncol=3) +
-  geom_smooth(alpha = .1, colour = "darkgrey") +
   geom_point(size=3, alpha = .8) +
+  ggtitle("SenesteHandelspris ~ Numeric variables") +
   scale_color_tableau() +
   scale_y_continuous(labels = function(n) {
               trans = n / 1000000
@@ -157,42 +155,52 @@ from3  <- seq(4,30,9)
 to3    <- seq(12,30,9)
 batch3 <- 1:length(from3)
 
-for (i in 1:length(from2)) {
+for (i in 1:length(from3)) {
   
   p <- df %>% 
     select_if(is.factor) %>%
     add_column(houseNums = df$houseNums, 
                EstimeretKvmPris = df$EstimeretKvmPris) %>% 
     select(House, houseNums, EstimeretKvmPris,everything(),-UNADR_PRIMUNIT_USAGE_NAME) %>%
-    select(c(1:3,from[i]:to[i])) %>%
+    select(c(1:3,from3[i]:to3[i])) %>%
     gather(variable, value,-EstimeretKvmPris, -House,-houseNums) %>%
     ggplot(aes(x=value,y=EstimeretKvmPris)) +
     geom_boxplot(alpha = .7) +
     geom_jitter(aes(colour=House),alpha = .8) +
     facet_wrap(~variable,scales="free") +
     scale_colour_tableau() +
-    ggtitle(glue::glue("Kategoriske variabler: {batch3[i]}"))
+    ggtitle(glue::glue("Kategoriske variabler: {batch3[i]}")) +
+    scale_y_continuous(labels = function(n) {
+      trans = n / 1000
+      paste0(trans, "K")
+    })
   
   print(p)
 }
+
+
 #####################################################################
 # LAST PURCHASE PRICE ~ . (factor, 3 x 3)
 
-for (i in 1:length(from2)) {
+for (i in 1:length(from3)) {
   
   p <- df %>% 
     select_if(is.factor) %>%
     add_column(houseNums = df$houseNums, 
                SenesteHandelspris = df$SenesteHandelspris) %>% 
     select(House, houseNums, SenesteHandelspris,everything(),-UNADR_PRIMUNIT_USAGE_NAME) %>%
-    select(c(1:3,from[i]:to[i])) %>%
+    select(c(1:3,from3[i]:to3[i])) %>%
     gather(variable, value,-SenesteHandelspris, -House,-houseNums) %>%
     ggplot(aes(x=value,y=SenesteHandelspris)) +
     geom_boxplot(alpha = .7) +
     geom_jitter(aes(colour=House),alpha = .8) +
     facet_wrap(~variable,scales="free") +
     scale_colour_tableau() +
-    ggtitle(glue::glue("Kategoriske variabler: {batch3[i]}"))
+    ggtitle(glue::glue("Kategoriske variabler: {batch3[i]}")) +
+    scale_y_continuous(labels = function(n) {
+      trans = n / 1000000
+      paste0(trans, "M")
+    })
   
   print(p)
 }

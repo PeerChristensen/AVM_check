@@ -1,0 +1,46 @@
+---
+title: "AVM check"
+author: "Peer Christensen"
+date: "1/4/2019"
+output:
+  html_document:
+    toc: yes
+  html_notebook:
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+```{r}
+library(tidyverse)
+library(table)
+library(ggthemes)
+
+theme_set(theme_light())
+
+df <- read_csv("avm_check.csv") %>%
+  mutate(houseNums = str_split(UNADR_NAME,",",2) %>% 
+           map(1) %>% unlist() %>% parse_number() %>% 
+           as.character(),
+         House = ifelse(houseNums == "30", "target","other"))
+
+df <- df %>% select_if(function(x) n_distinct(x) > 1)
+
+df <- df %>% mutate_if(~n_distinct(.[]) <= 3, factor)
+
+df <- df %>%
+  select(-Kvhx,-KVH,-X,-Y, -Id,-Ejendomsnummer, -UNADR_PRIMUNIT_USAGE_CODE,
+         -Right_UNADR_KVHX,PROP_VALUATION_AVM_DISC_NAME,-Sold_Property_Flag,
+         -True_Performance_Flag,-ACADR_KEY,-CELL100_NAME,-PROP_KEY,-PROP_NO,-PROP_UNADR_KEY,
+         -Right_UNADR_KVHX, -UNADR_NAME)
+
+# check for large number of NAs
+NAs <- df %>% group_by(houseNums) %>% apply(1, function(x) sum(is.na(x)))
+
+df <- df %>% add_column(NAs)
+```
+
