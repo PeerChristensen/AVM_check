@@ -2,7 +2,6 @@
 # KVHX:5639850030
 
 library(tidyverse)
-library(table)
 library(ggthemes)
 
 theme_set(theme_light())
@@ -143,7 +142,7 @@ for (i in 1:length(from2)) {
     geom_col(alpha = .8) +
     facet_wrap(~variable,scales="free") +
     scale_fill_tableau() +
-    ggtitle(glue::glue("Kategoriske variabler: {batch2[i]}"))
+    ggtitle(glue::glue("Categorical variables: {batch2[i]}"))
   
   print(p)
 }
@@ -169,7 +168,7 @@ for (i in 1:length(from3)) {
     geom_jitter(aes(colour=House),alpha = .8) +
     facet_wrap(~variable,scales="free") +
     scale_colour_tableau() +
-    ggtitle(glue::glue("Kategoriske variabler: {batch3[i]}")) +
+    ggtitle(glue::glue("EstimeretKvmPris ~ Categorical variables: {batch3[i]}")) +
     scale_y_continuous(labels = function(n) {
       trans = n / 1000
       paste0(trans, "K")
@@ -177,7 +176,6 @@ for (i in 1:length(from3)) {
   
   print(p)
 }
-
 
 #####################################################################
 # LAST PURCHASE PRICE ~ . (factor, 3 x 3)
@@ -196,7 +194,7 @@ for (i in 1:length(from3)) {
     geom_jitter(aes(colour=House),alpha = .8) +
     facet_wrap(~variable,scales="free") +
     scale_colour_tableau() +
-    ggtitle(glue::glue("Kategoriske variabler: {batch3[i]}")) +
+    ggtitle(glue::glue("SenesteHandelspris ~ Categorical variables: {batch3[i]}")) +
     scale_y_continuous(labels = function(n) {
       trans = n / 1000000
       paste0(trans, "M")
